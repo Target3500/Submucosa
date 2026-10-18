@@ -363,7 +363,7 @@
         return `rgb(${Math.floor(r * 0.55)}, ${Math.floor(g * 0.55)}, ${Math.floor(b * 0.55)})`;
       }
       if (theme === 'dark' && luminance < 0.35) {
-        return `rgb(${Math.min(255, Math.floor(r * 1.8 + 60))}, ${Math.min(255, Math.floor(g * 1.8 + 60))}, ${Math.min(255, Math.floor(b * 1.8 + 60))})`;
+        return `rgb(${Math.min(255, Math.floor(r * 1.8 + 60))}, ${Math.min(255, Math.floor(g * 1.8 + 60))})`;
       }
       return hexColor;
     };
@@ -398,14 +398,12 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
       initializeFirestore,
-      persistentLocalCache,
-      persistentMultipleTabManager,
       collection, 
       addDoc, 
       updateDoc, 
       deleteDoc, 
       doc, 
-      onSnapshot,
+      getDocs,
       getDoc
     } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
@@ -421,10 +419,10 @@
 
     const app = initializeApp(firebaseConfig);
 
-    // تفعيل الكاش المحلي مع معالجة استقرار الشبكة
+    // حل مشكلة بطء وتعليق الاتصال بالشبكة في مصر
     const db = initializeFirestore(app, {
-      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-      experimentalForceLongPolling: true
+      experimentalAutoDetectLongPolling: true,
+      useFetchStreams: false
     });
 
     const ADMIN_PASS = "K6f06001";
@@ -459,32 +457,40 @@
       }
     };
 
-    // الاستماع المباشر للمواد (يقرأ الكاش فوراً ثم يحدث من السيرفر)
-    onSnapshot(collection(db, "folders"), (snapshot) => {
-      folders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      folders.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-      render();
-    }, (err) => {
-      console.error("خطأ قراءة المواد:", err);
-    });
+    async function loadData() {
+      const container = document.getElementById('foldersContainer');
+      try {
+        const [fSnap, lSnap] = await Promise.all([
+          getDocs(collection(db, "folders")),
+          getDocs(collection(db, "lectures"))
+        ]);
 
-    // الاستماع المباشر للمحاضرات (بيانات وصفية خفيفة)
-    onSnapshot(collection(db, "lectures"), (snapshot) => {
-      lectures = snapshot.docs.map(d => {
-        const data = d.data();
-        return {
+        folders = fSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        folders.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        lectures = lSnap.docs.map(d => ({
           id: d.id,
-          folderId: data.folderId,
-          title: data.title,
-          color: data.color,
-          order: data.order ?? 0
-        };
-      });
-      lectures.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-      render();
-    }, (err) => {
-      console.error("خطأ قراءة المحاضرات:", err);
-    });
+          folderId: d.data().folderId,
+          title: d.data().title,
+          color: d.data().color,
+          order: d.data().order ?? 0
+        }));
+        lectures.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        render();
+      } catch (err) {
+        console.error("خطأ جلب البيانات:", err);
+        container.innerHTML = `
+          <div style="text-align: center; padding: 20px;">
+            <p style="color: var(--danger); margin-bottom: 12px;">تعذر الاتصال بقاعدة البيانات. تأكد من اتصال الإنترنت.</p>
+            <button class="btn" onclick="loadData()">إعادة المحاولة 🔄</button>
+          </div>
+        `;
+      }
+    }
+
+    window.loadData = loadData;
+    loadData();
 
     function render() {
       const container = document.getElementById('foldersContainer');
@@ -584,7 +590,7 @@
 
     window.render = render;
 
-    // جلب كود الـ HTML فقط عند النقر
+    // استدعاء محتوى الـ HTML عند النقر فقط
     window.openLecture = async function(id, title) {
       document.getElementById('viewerTitle').textContent = `جاري تحميل ${title}...`;
       document.getElementById('lectureFrame').srcdoc = '<p style="color:#fff;text-align:center;padding:50px;font-family:sans-serif;">جاري فتح الملخص...</p>';
@@ -647,6 +653,7 @@
           await addDoc(collection(db, "folders"), { name, icon, color, order: folders.length, createdAt: Date.now() });
         }
         window.closeModal('folderModal');
+        await loadData();
       } catch (err) {
         alert('حدث خطأ: ' + err.message);
       } finally {
@@ -657,6 +664,7 @@
     window.deleteFolder = async function(id) {
       if (!confirm('هل تريد بالتأكيد حذف هذه المادة؟')) return;
       await deleteDoc(doc(db, "folders", id));
+      await loadData();
     };
 
     window.moveFolder = async function(index, direction) {
@@ -670,6 +678,7 @@
 
       await updateDoc(doc(db, "folders", current.id), { order: targetOrder });
       await updateDoc(doc(db, "folders", target.id), { order: currentOrder });
+      await loadData();
     };
 
     window.openCreateLecture = function() {
@@ -719,6 +728,7 @@
           await addDoc(collection(db, "lectures"), { folderId, title, color, content, order: folderLecs.length, createdAt: Date.now() });
         }
         window.closeModal('fileModal');
+        await loadData();
       } catch (err) {
         alert('حدث خطأ: ' + err.message);
       } finally {
@@ -729,6 +739,7 @@
     window.deleteLecture = async function(id) {
       if (!confirm('هل تريد حذف هذه المحاضرة؟')) return;
       await deleteDoc(doc(db, "lectures", id));
+      await loadData();
     };
 
     window.moveLecture = async function(folderId, index, direction) {
@@ -744,6 +755,7 @@
 
       await updateDoc(doc(db, "lectures", current.id), { order: targetOrder });
       await updateDoc(doc(db, "lectures", target.id), { order: currentOrder });
+      await loadData();
     };
 
     window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
