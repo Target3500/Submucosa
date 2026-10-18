@@ -1,60 +1,142 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>منصة Submucosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #051610;
-      --card-bg: #09241b;
-      --card-border: #134e38;
-      --title: #4ade80;
-      --text: #d1fae5;
-      --text-muted: #86efac;
-      --accent: #10b981;
+    :root[data-theme="dark"] {
+      --bg: #090a0f;
+      --card-bg: #11131a;
+      --card-border: #1e222d;
+      --card-hover: #181c26;
+      --title: #f8fafc;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
       --danger: #ef4444;
+      --subtle-border: rgba(255, 255, 255, 0.07);
+      --badge-bg: #151821;
+      --item-bg: #0d0f14;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding: 30px 16px 80px; min-height: 100vh; }
-    header { text-align: center; max-width: 800px; margin: 0 auto 25px; }
-    h1 { color: var(--title); margin-bottom: 8px; font-size: 2rem; }
-    p { color: var(--text-muted); }
-
+    :root[data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-hover: #f1f5f9;
+      --title: #0284c7;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent: #0284c7;
+      --danger: #ef4444;
+      --subtle-border: #f1f5f9;
+      --badge-bg: #f0f9ff;
+      --item-bg: #f8fafc;
+      --shadow: 0 4px 20px rgba(2, 132, 199, 0.06);
+    }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; 
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+    body { 
+      background-color: var(--bg); 
+      color: var(--text); 
+      padding: 40px 16px 90px; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .theme-switch-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 7px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+    .brand-icon svg { width: 26px; height: 26px; }
+    header { text-align: center; max-width: 700px; width: 100%; margin: 0 auto 30px; }
+    h1 { color: var(--title); margin-bottom: 8px; font-size: 2.3rem; font-weight: 800; letter-spacing: -0.5px; }
+    header p { color: var(--text-muted); font-size: 0.98rem; }
+    .developer-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 14px;
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      direction: ltr;
+    }
+    .developer-badge strong { color: var(--accent); }
     .admin-bar {
-      max-width: 800px;
-      margin: 0 auto 20px;
+      max-width: 700px;
+      width: 100%;
+      margin: 0 auto 24px;
       display: none;
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
     }
     .btn {
-      background: #134e38;
-      color: #fff;
-      border: 1px solid var(--title);
-      padding: 7px 14px;
-      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: 10px;
       cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s;
+      font-weight: 600;
       font-size: 0.9rem;
     }
-    .btn:hover { background: var(--accent); }
-    .btn-icon { padding: 4px 8px; font-size: 0.8rem; background: #061c15; border-color: var(--card-border); }
-    .btn-danger { border-color: var(--danger); color: var(--danger); }
+    .btn:hover { background: var(--card-hover); border-color: var(--accent); }
+    .btn-icon { padding: 5px 9px; font-size: 0.8rem; background: var(--item-bg); border-color: var(--card-border); border-radius: 6px; }
+    .btn-icon:hover { background: var(--card-hover); }
+    .btn-danger { border-color: rgba(239, 68, 68, 0.3); color: var(--danger); background: rgba(239, 68, 68, 0.05); }
     .btn-danger:hover { background: var(--danger); color: #fff; }
-
-    .container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-
+    .container { max-width: 700px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
     details {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
+      box-shadow: var(--shadow);
     }
+    details:hover { border-color: var(--accent); background: var(--card-hover); }
+    details[open] { background: var(--card-bg); border-color: var(--accent); }
     summary {
-      padding: 14px 18px;
+      padding: 16px 20px;
       cursor: pointer;
       font-weight: 700;
       font-size: 1.15rem;
@@ -64,49 +146,70 @@
       align-items: center;
     }
     summary::-webkit-details-marker { display: none; }
-    .folder-header-left { display: flex; align-items: center; gap: 8px; }
-    .folder-controls { display: none; gap: 4px; }
-
+    .folder-title-box { display: flex; align-items: center; gap: 14px; }
+    .subject-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+    .folder-header-left { display: flex; align-items: center; gap: 10px; }
+    .lectures-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--badge-bg);
+      border: 1px solid var(--card-border);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    .folder-controls { display: none; gap: 5px; }
     .lectures-list {
-      padding: 10px 18px 18px;
-      border-top: 1px solid var(--card-border);
+      padding: 12px 20px 20px;
+      border-top: 1px solid var(--subtle-border);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+      background: var(--item-bg);
     }
     .lecture-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: #061c15;
+      gap: 10px;
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 4px 8px;
-      transition: 0.2s;
+      border-radius: 10px;
+      padding: 6px 12px;
     }
-    .lecture-item:hover { border-color: var(--accent); }
+    .lecture-item:hover { border-color: var(--accent); background: var(--card-hover); }
     .lecture-btn {
       flex: 1;
       text-align: right;
-      padding: 8px;
+      padding: 8px 4px;
       background: transparent;
       border: none;
       color: inherit;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.98rem;
+      font-weight: 600;
     }
-    .item-controls { display: none; gap: 4px; }
-
+    .item-controls { display: none; gap: 5px; }
     body.is-admin .admin-bar { display: flex; }
     body.is-admin .folder-controls { display: flex; }
     body.is-admin .item-controls { display: flex; }
-
     .modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
@@ -115,26 +218,27 @@
     .modal-content {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
+      border-radius: 18px;
       width: 100%;
-      max-width: 550px;
-      padding: 20px;
+      max-width: 540px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
     .modal-content input, .modal-content select, .modal-content textarea {
       width: 100%;
-      padding: 10px;
-      border-radius: 6px;
+      padding: 11px 14px;
+      border-radius: 10px;
       border: 1px solid var(--card-border);
-      background: #061c15;
+      background: var(--item-bg);
       color: var(--text);
       font-family: inherit;
+      outline: none;
     }
     .modal-content textarea { resize: vertical; min-height: 140px; direction: ltr; font-family: monospace; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
-
     .viewer {
       display: none;
       position: fixed;
@@ -144,38 +248,47 @@
       flex-direction: column;
     }
     .viewer-header {
-      background: #09241b;
-      padding: 10px 20px;
+      background: var(--card-bg);
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--card-border);
     }
     .viewer iframe { width: 100%; height: 100%; border: none; }
-
     .admin-toggle {
       position: fixed;
-      bottom: 12px;
-      left: 12px;
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.3);
-      padding: 4px 8px;
-      border-radius: 6px;
+      bottom: 14px;
+      left: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
+      box-shadow: var(--shadow);
     }
-    .admin-toggle:hover { color: #fff; border-color: #fff; }
   </style>
 </head>
 <body>
 
+  <button class="theme-switch-btn" id="themeToggleBtn" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeText">الطبي النقي</span>
+  </button>
+
   <header>
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/>
+      </svg>
+    </div>
     <h1>منصة Submucosa</h1>
     <p>اختر المادة ثم اضغط على المحاضرة لعرض الملخص</p>
-    <p style="font-size: 0.88rem; color: #4ade80; margin-top: 8px; direction: ltr;">
+    <div class="developer-badge">
       🛠️ Developer: <strong>Ayman Yousry</strong>
-    </p>
+    </div>
   </header>
 
   <div class="admin-bar">
@@ -192,9 +305,11 @@
     <div class="modal-content">
       <h3 id="folderModalTitle" style="color: var(--title);">بيانات المادة</h3>
       <input type="hidden" id="editFolderId">
-      <input type="text" id="folderName" placeholder="اسم المادة">
-      <label>لون العنوان:</label>
-      <input type="color" id="folderColor" value="#4ade80">
+      <input type="text" id="folderName" placeholder="اسم المادة (مثال: Physiology)">
+      <label style="font-size: 0.9rem; color: var(--text-muted);">أيقونة أو إيموجي المادة:</label>
+      <input type="text" id="folderIcon" placeholder="ضع إيموجي مثل: 🫀 أو 🧬 أو 🦴">
+      <label style="font-size: 0.9rem; color: var(--text-muted);">لون العنوان:</label>
+      <input type="color" id="folderColor" value="#0284c7">
       <div class="modal-actions">
         <button class="btn" id="saveFolderBtn" onclick="saveFolder()">حفظ</button>
         <button class="btn" onclick="closeModal('folderModal')">إلغاء</button>
@@ -208,8 +323,8 @@
       <input type="hidden" id="editLectureId">
       <select id="targetFolder"></select>
       <input type="text" id="fileName" placeholder="اسم المحاضرة">
-      <label>لون النص:</label>
-      <input type="color" id="fileColor" value="#d1fae5">
+      <label style="font-size: 0.9rem; color: var(--text-muted);">لون النص:</label>
+      <input type="color" id="fileColor" value="#0284c7">
       <textarea id="fileHtml" placeholder="الصق كود HTML الخاص بالمحاضرة هنا..."></textarea>
       <div class="modal-actions">
         <button class="btn" id="saveFileBtn" onclick="saveLecture()">حفظ</button>
@@ -228,18 +343,68 @@
 
   <button class="admin-toggle" onclick="promptAdmin()" title="تسجيل الدخول للمشرف">🔒 دخول المشرف</button>
 
+  <script>
+    window.getAdjustedColor = function(hexColor) {
+      if (!hexColor || !hexColor.startsWith('#')) return 'inherit';
+      let r = 0, g = 0, b = 0;
+      if (hexColor.length === 4) {
+        r = parseInt(hexColor[1] + hexColor[1], 16);
+        g = parseInt(hexColor[2] + hexColor[2], 16);
+        b = parseInt(hexColor[3] + hexColor[3], 16);
+      } else if (hexColor.length === 7) {
+        r = parseInt(hexColor.substr(1, 2), 16);
+        g = parseInt(hexColor.substr(3, 2), 16);
+        b = parseInt(hexColor.substr(5, 2), 16);
+      }
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+
+      if (theme === 'light' && luminance > 0.65) {
+        return `rgb(${Math.floor(r * 0.55)}, ${Math.floor(g * 0.55)}, ${Math.floor(b * 0.55)})`;
+      }
+      if (theme === 'dark' && luminance < 0.35) {
+        return `rgb(${Math.min(255, Math.floor(r * 1.8 + 60))}, ${Math.min(255, Math.floor(g * 1.8 + 60))}, ${Math.min(255, Math.floor(b * 1.8 + 60))})`;
+      }
+      return hexColor;
+    };
+
+    window.toggleTheme = function() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeBtn(next);
+      if (window.render) window.render();
+    };
+
+    function updateThemeBtn(theme) {
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      if (theme === 'light') {
+        icon.textContent = '🌙';
+        text.textContent = 'الفخامة الداكنة';
+      } else {
+        icon.textContent = '☀️';
+        text.textContent = 'الطبي النقي';
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeBtn(savedTheme);
+  </script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
-      initializeFirestore, 
-      persistentLocalCache, 
-      persistentMultipleTabManager,
+      getFirestore, 
       collection, 
       addDoc, 
       updateDoc, 
       deleteDoc, 
       doc, 
-      onSnapshot 
+      getDocs,
+      getDoc
     } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -253,17 +418,12 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    
-    // تفعيل التخزين المؤقت المحلي لسرعة التحميل وتفادي الاختفاء
-    const db = initializeFirestore(app, {
-      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
-    });
+    const db = getFirestore(app);
 
     const ADMIN_PASS = "K6f06001";
 
     let folders = [];
     let lectures = [];
-    let foldersLoaded = false;
 
     if (sessionStorage.getItem('isAdmin') === 'true') {
       document.body.classList.add('is-admin');
@@ -292,18 +452,39 @@
       }
     };
 
-    onSnapshot(collection(db, "folders"), (snapshot) => {
-      folders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      folders.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-      foldersLoaded = true;
-      render();
-    });
+    // جلب القوائم والعناوين فقط لتكون سرعة الفتح لحظية
+    async function loadData() {
+      try {
+        const [foldersSnap, lecturesSnap] = await Promise.all([
+          getDocs(collection(db, "folders")),
+          getDocs(collection(db, "lectures"))
+        ]);
 
-    onSnapshot(collection(db, "lectures"), (snapshot) => {
-      lectures = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      lectures.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-      if (foldersLoaded) render();
-    });
+        folders = foldersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        folders.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        // تخزين البيانات الوصفية للمحاضرة وتجنب إبقاء كود الـ HTML الضخم في الذاكرة
+        lectures = lecturesSnap.docs.map(d => {
+          const data = d.data();
+          return {
+            id: d.id,
+            folderId: data.folderId,
+            title: data.title,
+            color: data.color,
+            order: data.order ?? 0
+          };
+        });
+        lectures.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        render();
+      } catch (err) {
+        console.error("خطأ جلب البيانات:", err);
+        document.getElementById('foldersContainer').innerHTML = 
+          '<p style="text-align: center; color: var(--danger);">تعذر تحميل المحتوى. تأكد من اتصال الإنترنت ثم أعد المحاولة.</p>';
+      }
+    }
+
+    loadData();
 
     function render() {
       const container = document.getElementById('foldersContainer');
@@ -326,13 +507,28 @@
         details.open = false;
 
         const summary = document.createElement('summary');
-        
+        const titleBox = document.createElement('div');
+        titleBox.className = 'folder-title-box';
+
+        const iconBox = document.createElement('div');
+        iconBox.className = 'subject-icon-box';
+        iconBox.textContent = folder.icon || '📚';
+
         const nameSpan = document.createElement('span');
         nameSpan.textContent = folder.name;
-        nameSpan.style.color = folder.color || 'var(--title)';
+        nameSpan.style.color = window.getAdjustedColor(folder.color);
+
+        titleBox.appendChild(iconBox);
+        titleBox.appendChild(nameSpan);
 
         const leftDiv = document.createElement('div');
         leftDiv.className = 'folder-header-left';
+
+        const folderLecs = lectures.filter(l => l.folderId === folder.id);
+
+        const countBadge = document.createElement('span');
+        countBadge.className = 'lectures-badge';
+        countBadge.textContent = `[${folderLecs.length}]`;
 
         const fControls = document.createElement('div');
         fControls.className = 'folder-controls';
@@ -343,17 +539,17 @@
           <button class="btn btn-icon btn-danger" onclick="event.stopPropagation(); deleteFolder('${folder.id}')" title="حذف">🗑️</button>
         `;
 
+        leftDiv.appendChild(countBadge);
         leftDiv.appendChild(fControls);
-        summary.appendChild(nameSpan);
+
+        summary.appendChild(titleBox);
         summary.appendChild(leftDiv);
 
         const list = document.createElement('div');
         list.className = 'lectures-list';
 
-        const folderLecs = lectures.filter(l => l.folderId === folder.id);
-
         if (folderLecs.length === 0) {
-          list.innerHTML = '<span style="color: #6ee7b7; font-size: 0.9rem;">لا توجد محاضرات في هذه المادة بعد.</span>';
+          list.innerHTML = '<span style="color: var(--text-muted); font-size: 0.9rem;">لا توجد محاضرات في هذه المادة بعد.</span>';
         } else {
           folderLecs.forEach((lec, lIdx) => {
             const item = document.createElement('div');
@@ -362,8 +558,8 @@
             const btn = document.createElement('button');
             btn.className = 'lecture-btn';
             btn.textContent = lec.title;
-            btn.style.color = lec.color || 'var(--text)';
-            btn.onclick = () => window.openLecture(lec.title, lec.content);
+            btn.style.color = window.getAdjustedColor(lec.color);
+            btn.onclick = () => window.openLecture(lec.id, lec.title);
 
             const iControls = document.createElement('div');
             iControls.className = 'item-controls';
@@ -386,10 +582,39 @@
       });
     }
 
+    window.render = render;
+
+    // جلب محتوى المحاضرة عند الضغط عليها فقط
+    window.openLecture = async function(id, title) {
+      document.getElementById('viewerTitle').textContent = `جاري تحميل ${title}...`;
+      document.getElementById('lectureFrame').srcdoc = '<p style="color:#fff;text-align:center;padding:50px;font-family:sans-serif;">جاري فتح الملخص...</p>';
+      document.getElementById('viewer').style.display = 'flex';
+
+      try {
+        const snap = await getDoc(doc(db, "lectures", id));
+        if (snap.exists()) {
+          document.getElementById('viewerTitle').textContent = title;
+          document.getElementById('lectureFrame').srcdoc = snap.data().content || '<p style="color:#fff;text-align:center;">لا يوجد محتوى.</p>';
+        } else {
+          alert('المحاضرة غير موجودة.');
+          window.closeViewer();
+        }
+      } catch (e) {
+        alert('تعذر تحميل المحاضرة: ' + e.message);
+        window.closeViewer();
+      }
+    };
+
+    window.closeViewer = function() {
+      document.getElementById('viewer').style.display = 'none';
+      document.getElementById('lectureFrame').srcdoc = '';
+    };
+
     window.openCreateFolder = function() {
       document.getElementById('editFolderId').value = '';
       document.getElementById('folderName').value = '';
-      document.getElementById('folderColor').value = '#4ade80';
+      document.getElementById('folderIcon').value = '📚';
+      document.getElementById('folderColor').value = '#0284c7';
       document.getElementById('folderModalTitle').textContent = 'إضافة مادة جديدة';
       window.openModal('folderModal');
     };
@@ -399,7 +624,8 @@
       if (!f) return;
       document.getElementById('editFolderId').value = f.id;
       document.getElementById('folderName').value = f.name;
-      document.getElementById('folderColor').value = f.color || '#4ade80';
+      document.getElementById('folderIcon').value = f.icon || '📚';
+      document.getElementById('folderColor').value = f.color || '#0284c7';
       document.getElementById('folderModalTitle').textContent = 'تعديل بيانات المادة';
       window.openModal('folderModal');
     };
@@ -407,6 +633,7 @@
     window.saveFolder = async function() {
       const id = document.getElementById('editFolderId').value;
       const name = document.getElementById('folderName').value.trim();
+      const icon = document.getElementById('folderIcon').value.trim() || '📚';
       const color = document.getElementById('folderColor').value;
       if (!name) return alert('يرجى إدخال اسم المادة');
 
@@ -415,11 +642,12 @@
 
       try {
         if (id) {
-          await updateDoc(doc(db, "folders", id), { name, color });
+          await updateDoc(doc(db, "folders", id), { name, icon, color });
         } else {
-          await addDoc(collection(db, "folders"), { name, color, order: folders.length, createdAt: Date.now() });
+          await addDoc(collection(db, "folders"), { name, icon, color, order: folders.length, createdAt: Date.now() });
         }
         window.closeModal('folderModal');
+        await loadData();
       } catch (err) {
         alert('حدث خطأ: ' + err.message);
       } finally {
@@ -428,8 +656,9 @@
     };
 
     window.deleteFolder = async function(id) {
-      if (!confirm('هل تريد بالتأكيد حذف هذه المادة؟ (لن تُحذف محاضراتها تلقائياً)')) return;
+      if (!confirm('هل تريد بالتأكيد حذف هذه المادة؟')) return;
       await deleteDoc(doc(db, "folders", id));
+      await loadData();
     };
 
     window.moveFolder = async function(index, direction) {
@@ -443,27 +672,33 @@
 
       await updateDoc(doc(db, "folders", current.id), { order: targetOrder });
       await updateDoc(doc(db, "folders", target.id), { order: currentOrder });
+      await loadData();
     };
 
     window.openCreateLecture = function() {
       document.getElementById('editLectureId').value = '';
       document.getElementById('fileName').value = '';
-      document.getElementById('fileColor').value = '#d1fae5';
+      document.getElementById('fileColor').value = '#0284c7';
       document.getElementById('fileHtml').value = '';
       document.getElementById('fileModalTitle').textContent = 'إضافة محاضرة جديدة';
       window.openModal('fileModal');
     };
 
-    window.editLecture = function(id) {
+    window.editLecture = async function(id) {
       const l = lectures.find(x => x.id === id);
       if (!l) return;
       document.getElementById('editLectureId').value = l.id;
       document.getElementById('targetFolder').value = l.folderId;
       document.getElementById('fileName').value = l.title;
-      document.getElementById('fileColor').value = l.color || '#d1fae5';
-      document.getElementById('fileHtml').value = l.content || '';
+      document.getElementById('fileColor').value = l.color || '#0284c7';
+      document.getElementById('fileHtml').value = 'جاري التحميل...';
       document.getElementById('fileModalTitle').textContent = 'تعديل بيانات المحاضرة';
       window.openModal('fileModal');
+
+      const snap = await getDoc(doc(db, "lectures", id));
+      if (snap.exists()) {
+        document.getElementById('fileHtml').value = snap.data().content || '';
+      }
     };
 
     window.saveLecture = async function() {
@@ -474,7 +709,7 @@
       const content = document.getElementById('fileHtml').value;
 
       if (!folderId) return alert('يرجى إنشاء مادة أولاً');
-      if (!title || !content) return alert('يرجى كتابة اسم المحاضرة وكود الـ HTML');
+      if (!title || !content) return alert('يرجى كتابة اسم المحاضرة ومحتوى الـ HTML');
 
       const btn = document.getElementById('saveFileBtn');
       btn.disabled = true;
@@ -487,6 +722,7 @@
           await addDoc(collection(db, "lectures"), { folderId, title, color, content, order: folderLecs.length, createdAt: Date.now() });
         }
         window.closeModal('fileModal');
+        await loadData();
       } catch (err) {
         alert('حدث خطأ: ' + err.message);
       } finally {
@@ -495,8 +731,9 @@
     };
 
     window.deleteLecture = async function(id) {
-      if (!confirm('هل تريد بالتأكيد حذف هذه المحاضرة؟')) return;
+      if (!confirm('هل تريد حذف هذه المحاضرة؟')) return;
       await deleteDoc(doc(db, "lectures", id));
+      await loadData();
     };
 
     window.moveLecture = async function(folderId, index, direction) {
@@ -512,17 +749,7 @@
 
       await updateDoc(doc(db, "lectures", current.id), { order: targetOrder });
       await updateDoc(doc(db, "lectures", target.id), { order: currentOrder });
-    };
-
-    window.openLecture = function(title, content) {
-      document.getElementById('viewerTitle').textContent = title;
-      document.getElementById('lectureFrame').srcdoc = content;
-      document.getElementById('viewer').style.display = 'flex';
-    };
-
-    window.closeViewer = function() {
-      document.getElementById('viewer').style.display = 'none';
-      document.getElementById('lectureFrame').srcdoc = '';
+      await loadData();
     };
 
     window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
