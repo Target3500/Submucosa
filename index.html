@@ -72,20 +72,6 @@
       font-weight: 600;
       box-shadow: var(--shadow);
     }
-    .brand-icon {
-      width: 52px;
-      height: 52px;
-      background: var(--badge-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-      color: var(--accent);
-      box-shadow: var(--shadow);
-    }
-    .brand-icon svg { width: 26px; height: 26px; }
     header { text-align: center; max-width: 700px; width: 100%; margin: 0 auto 30px; }
     h1 { color: var(--title); margin-bottom: 8px; font-size: 2.3rem; font-weight: 800; letter-spacing: -0.5px; }
     header p { color: var(--text-muted); font-size: 0.98rem; }
@@ -279,11 +265,6 @@
   </button>
 
   <header>
-    <div class="brand-icon">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/>
-      </svg>
-    </div>
     <h1>منصة Submucosa</h1>
     <p>اختر المادة ثم اضغط على المحاضرة لعرض الملخص</p>
     <div class="developer-badge">
@@ -344,7 +325,6 @@
   <button class="admin-toggle" onclick="promptAdmin()" title="تسجيل الدخول للمشرف">🔒 دخول المشرف</button>
 
   <script>
-    // نظام HSL للحفاظ على هوية وتشبّع اللون ومنع تحوله إلى الأبيض
     window.getAdjustedColor = function(hexColor) {
       if (!hexColor || !hexColor.startsWith('#')) return 'inherit';
       let r = 0, g = 0, b = 0;
@@ -374,13 +354,11 @@
 
       const theme = document.documentElement.getAttribute('data-theme') || 'dark';
 
-      // في الوضع الداكن: إذا كان اللون داكناً نرفع إضاءته مع تعزيز التشبع لمنع البهتان
       if (theme === 'dark' && l < 0.60) {
         l = 0.65;
         s = Math.max(s, 0.75);
       }
 
-      // في الوضع الفاتح: نجعل اللون غامقاً وواضحاً للقراءة
       if (theme === 'light' && l > 0.45) {
         l = 0.38;
       }
@@ -439,7 +417,6 @@
 
     const app = initializeApp(firebaseConfig);
 
-    // تفعيل الاتصال المباشر السريع لتجاوز تعليق الشبكات
     const db = initializeFirestore(app, {
       experimentalAutoDetectLongPolling: true,
       useFetchStreams: false
@@ -610,7 +587,6 @@
 
     window.render = render;
 
-    // استدعاء محتوى الـ HTML عند النقر فقط
     window.openLecture = async function(id, title) {
       document.getElementById('viewerTitle').textContent = `جاري تحميل ${title}...`;
       document.getElementById('lectureFrame').srcdoc = '<p style="color:#fff;text-align:center;padding:50px;font-family:sans-serif;">جاري فتح الملخص...</p>';
