@@ -671,18 +671,26 @@
       await loadData();
     };
 
+    // نظام تحريك المجلدات الجديد مع التحديث اللحظي
     window.moveFolder = async function(index, direction) {
       const targetIndex = index + direction;
       if (targetIndex < 0 || targetIndex >= folders.length) return;
-      const current = folders[index];
-      const target = folders[targetIndex];
 
-      const currentOrder = current.order ?? index;
-      const targetOrder = target.order ?? targetIndex;
+      const temp = folders[index];
+      folders[index] = folders[targetIndex];
+      folders[targetIndex] = temp;
 
-      await updateDoc(doc(db, "folders", current.id), { order: targetOrder });
-      await updateDoc(doc(db, "folders", target.id), { order: currentOrder });
-      await loadData();
+      render();
+
+      try {
+        await Promise.all([
+          updateDoc(doc(db, "folders", folders[index].id), { order: index }),
+          updateDoc(doc(db, "folders", folders[targetIndex].id), { order: targetIndex })
+        ]);
+      } catch (err) {
+        console.error("خطأ تغيير ترتيب المواد:", err);
+        await loadData();
+      }
     };
 
     window.openCreateLecture = function() {
@@ -746,20 +754,30 @@
       await loadData();
     };
 
+    // نظام تحريك المحاضرات الجديد مع التحديث اللحظي
     window.moveLecture = async function(folderId, index, direction) {
       const folderLecs = lectures.filter(l => l.folderId === folderId);
       const targetIndex = index + direction;
       if (targetIndex < 0 || targetIndex >= folderLecs.length) return;
 
-      const current = folderLecs[index];
-      const target = folderLecs[targetIndex];
+      const currentLec = folderLecs[index];
+      const targetLec = folderLecs[targetIndex];
 
-      const currentOrder = current.order ?? index;
-      const targetOrder = target.order ?? targetIndex;
+      currentLec.order = targetIndex;
+      targetLec.order = index;
 
-      await updateDoc(doc(db, "lectures", current.id), { order: targetOrder });
-      await updateDoc(doc(db, "lectures", target.id), { order: currentOrder });
-      await loadData();
+      lectures.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      render();
+
+      try {
+        await Promise.all([
+          updateDoc(doc(db, "lectures", currentLec.id), { order: targetIndex }),
+          updateDoc(doc(db, "lectures", targetLec.id), { order: index })
+        ]);
+      } catch (err) {
+        console.error("خطأ تغيير ترتيب المحاضرات:", err);
+        await loadData();
+      }
     };
 
     window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
